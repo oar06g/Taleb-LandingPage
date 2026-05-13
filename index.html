@@ -23,7 +23,7 @@
 <body class="overflow-hidden bg-[#05060A] text-white flex items-center justify-center min-h-screen p-3 md:p-6">
 
   <!-- Main App Container -->
-  <div class="relative w-[95%] md:w-[90%] xl:w-[85%] h-[94vh] md:h-[90vh] overflow-hidden rounded-[32px] border border-white/10 bg-[#0B0B12]/90 shadow-[0_0_80px_rgba(124,92,255,0.18)] backdrop-blur-3xl">
+  <div class="relative w-[99%] h-[99vh] overflow-hidden rounded-[32px] border border-white/10 bg-[#0B0B12]/90 shadow-[0_0_80px_rgba(124,92,255,0.18)] backdrop-blur-3xl">
 
     <!-- Custom Scroll Area -->
     <div class="h-full overflow-y-auto overflow-x-hidden custom-scroll">
@@ -77,13 +77,11 @@
       </p>
 
       <div class="flex flex-wrap gap-4 mb-10">
-        <button class="px-8 py-4 rounded-2xl bg-gradient-to-r from-[#7C5CFF] to-[#00E5A8] text-black font-bold hover:scale-105 transition">
+        <a href="#waitlist" class="px-8 py-4 rounded-2xl bg-gradient-to-r from-[#7C5CFF] to-[#00E5A8] text-black font-bold hover:scale-105 transition inline-block">
           تابع الإطلاق
-        </button>
+        </a>
 
-        <button class="px-8 py-4 rounded-2xl border border-white/10 bg-white/5 text-white/80 hover:bg-white/10 transition">
-          اعرف أكثر
-        </button>
+        
       </div>
 
       <div class="flex flex-wrap gap-4">
@@ -217,7 +215,7 @@
   </section>
 
   <!-- CTA -->
-  <section id="contact" class="relative z-10 py-24">
+  <section id="waitlist" class="relative z-10 py-24">
     <div class="max-w-5xl mx-auto px-6">
       <div class="rounded-[40px] p-14 border border-white/10 bg-gradient-to-r from-[#7C5CFF]/10 to-[#00E5A8]/10 backdrop-blur-3xl text-center">
 
@@ -225,9 +223,18 @@
           قريباً على Taleb.
         </h2>
 
-        <p class="max-w-2xl mx-auto text-lg text-white/60 leading-9 mb-10">
+        <p class="max-w-2xl mx-auto text-lg text-white/60 leading-9 mb-6">
           تابع المشروع وكن من أوائل المستخدمين الذين سيجربون المنصة عند الإطلاق.
         </p>
+
+        <div class="inline-flex items-center gap-3 px-5 py-3 rounded-2xl border border-[#7C5CFF]/20 bg-white/5 mb-10">
+          <div class="w-3 h-3 rounded-full bg-[#00E5A8] animate-pulse"></div>
+
+          <span class="text-white/70">
+            <span id="waitlist-count" class="font-black text-white text-lg">0</span>
+            شخص في قائمة الانتظار
+          </span>
+        </div>
 
         <form id="waitlist-form" class="max-w-xl mx-auto space-y-4 text-right">
 
@@ -328,11 +335,22 @@
   <script>
     const SUPABASE_URL = "https://zodwyjiqxitdyzlgkxpt.supabase.co"
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpvZHd5amlxeGl0ZHl6bGdreHB0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxMTIzMjIsImV4cCI6MjA5MjY4ODMyMn0.MUKXna55GnQq-DE6E-Lnlc7W1pqIl_1trifMvTvBk9w"
-    
+
+
     const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     const form = document.getElementById('waitlist-form');
     const message = document.getElementById('message');
+
+    async function loadWaitlistCount() {
+      const { count } = await client
+        .from('waitlist')
+        .select('*', { count: 'exact', head: true });
+
+      document.getElementById('waitlist-count').innerText = count || 0;
+    }
+
+    loadWaitlistCount();
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -365,6 +383,7 @@
       message.style.color = '#00E5A8';
 
       form.reset();
+      loadWaitlistCount();
     });
   </script>
 
